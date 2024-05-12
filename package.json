@@ -1,0 +1,34 @@
+{
+  "name": "notes-astro",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "notes-build": "remark --watch --rc-path '.remarkrc.js' -- ~/repos/notes"
+  },
+  "dependencies": {
+    "@astrojs/svelte": "^4.0.2",
+    "@astrojs/tailwind": "^5.0.0",
+    "astro": "^3.1.0",
+    "d3": "^7.8.5",
+    "js-yaml": "^4.1.0",
+    "rehype-mathjax": "^5.0.0",
+    "remark": "^14.0.3",
+    "remark-cli": "^11.0.0",
+    "remark-enhance-frontmatter": "^0.0.2",
+    "remark-frontmatter": "^5.0.0",
+    "remark-inline-links": "^6.0.1",
+    "remark-math": "^5.0.0",
+    "svelte": "^4.2.1",
+    "tailwindcss": "^3.3.3",
+    "unist-util-visit": "^5.0.0"
+  },
+  "notes": "Before updating to latest, check that @astrojs/markdown-remark also updated",
+  "devDependencies": {
+    "@types/d3": "^7.4.1"
+  }
+}

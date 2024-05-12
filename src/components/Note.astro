@@ -1,0 +1,11 @@
+
+
+---
+const {entry} = Astro.props
+
+const { Content } = await entry.render();
+---
+
+<article class="p-2">
+  <Content />
+</article>

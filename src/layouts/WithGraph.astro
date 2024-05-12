@@ -1,0 +1,68 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import LinkGraph from '../components/graph/LinkGraph.astro';
+import { getCollection } from 'astro:content';
+
+const allNotes = await getCollection('notes');
+
+const notes = allNotes.map(
+  note => ({
+    id: `notes/${note.slug}`,
+    title: note.data.title,
+    links: note.data.links.map(link => `notes/${link}`)
+  })
+);
+---
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="Astro description" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <ViewTransitions />
+        <title>Graph</title>
+    </head>
+    <body>
+      <div class="flex h-screen">
+        <div class="flex-[2]">
+          <LinkGraph notes={notes} />
+        </div>
+        <div class="flex-1 overflow-scroll">
+          <slot />
+        </div>
+      </div>
+    </body>
+</html>
+
+<style is:global>
+  * {
+    padding: 0;
+    margin: 0;
+  }
+  html {
+      font-family: system-ui, sans-serif;
+  }
+  code {
+      font-family:
+          Menlo,
+          Monaco,
+          Lucida Console,
+          Liberation Mono,
+          DejaVu Sans Mono,
+          Bitstream Vera Sans Mono,
+          Courier New,
+          monospace;
+  }
+</style>
+<style>
+.graph-container {
+  min-width: 200px;
+  height: 100%
+}
+
+.focused-container {
+}
+</style>
+

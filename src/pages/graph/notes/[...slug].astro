@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import WithGraph from '../../../layouts/WithGraph.astro';
+import Note from '../../../components/Note.astro';
+
+export async function getStaticPaths() {
+  const notesEntries = await getCollection('notes');
+  return notesEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+<WithGraph>
+    <Note entry={entry} />
+</WithGraph>
