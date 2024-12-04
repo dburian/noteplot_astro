@@ -1,0 +1,106 @@
+<divided-separator >
+  <div class="h-screen grid auto-rows-max gap-y-4 mr-4 mt-4">
+    <div class="sep-button sep-close">x</div>
+    <div class="sep-button">&gt;</div>
+    <div class="sep-button">&lt;</div>
+    <div class="sep-button sep-slider">&lt;-&gt;</div>
+    <!--<div class="absolute top-0 z-0">
+      <div class="h-screen border-black border-l-[1px] relative left-[20px]"/>
+    </div>-->
+  </div>
+</divided-separator>
+
+<script>
+  import {navigate} from "astro:transitions/client";
+
+  class Separator extends HTMLElement {
+    constructor() {
+      super();
+
+      const sepClose = this.querySelector('.sep-close');
+      sepClose.addEventListener("mouseup", this.closeClicked);
+
+      const sepSlider = this.querySelector('.sep-slider');
+      sepSlider.addEventListener('mousedown', this.sliderMove);
+    }
+
+    closeClicked(event) {
+      event.preventDefault();
+      const graphContainer = document.querySelector(".graph-container")
+
+      const start = performance.now();
+      let container = document.querySelector(".graph-note-container");
+      const startWidth = container.clientWidth
+      const graphContainerStartWidth = graphContainer.clientWidth
+      const endWidth = container.clientWidth + (container.clientWidth - graphContainer.clientWidth)
+      const widthDif = endWidth - startWidth
+      document.body.style.overflow = "hidden"
+
+      console.log({container, widthDif, containerWidth: container.clientWidth, graphWidth: graphContainer.clientWidth})
+
+      const setWidth = (now) => {
+        const timeDif = (now - start) / 200
+        container.style.width = `${timeDif * widthDif + startWidth}px`
+        graphContainer.style.width = `${timeDif * widthDif + graphContainerStartWidth}px`
+
+        if (timeDif < 1.0) {
+          requestAnimationFrame(setWidth);
+        } else {
+          navigate("/graph")
+        }
+      }
+
+      requestAnimationFrame(setWidth);
+    }
+
+    sliderMove(event) {
+      const graphContainer = document.querySelector(".graph-container")
+      const sepSlider = this;
+      sepSlider.classList.add("sep-hover")
+
+      function mousemoveFn(event) {
+          event.preventDefault()
+          graphContainer.style.width = `${event.clientX - sepSlider.clientWidth/2}px`
+      }
+
+      // Since the container changes with navigation we have to acquire a fresh
+      // reference each time.
+      const container = document.querySelector(".graph-note-container");
+
+      container.addEventListener("mousemove", mousemoveFn)
+      container.addEventListener("mouseup", function tmp() {
+        container.removeEventListener("mousemove", mousemoveFn)
+
+        sepSlider.classList.remove("sep-hover")
+        container.removeEventListener("mouseup", tmp)
+      })
+    }
+
+  }
+
+  customElements.define('divided-separator', Separator);
+</script>
+
+<style>
+.sep-button {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  align-content: center;
+  cursor: pointer;
+  text-align: center;
+  background: black;
+  color: white;
+  font-weight: bold;
+  z-index: 10;
+  user-select:none;
+}
+
+.sep-button:hover,.sep-hover {
+  color: black;
+  background: white;
+  border: 2px solid black;
+}
+.sep-slider {
+}
+</style>

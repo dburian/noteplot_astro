@@ -1,0 +1,25 @@
+---
+import Separator from "./Separator.svelte";
+---
+
+<div
+  class="flex h-screen graph-note-container overflow-hidden"
+>
+  <div
+    class="graph-container w-screen flex-1 min-w-[60%]"
+    transition:persist
+  >
+    <slot name="first" />
+  </div>
+  <Separator client:load transition:persist />
+  {Astro.slots.has("second") && (
+    <div
+      class="h-screen overflow-y-auto overflow-x-clip flex-1 note-container"
+    >
+      <slot name="second" />
+    </div>
+  )}
+</div>
+
+
+

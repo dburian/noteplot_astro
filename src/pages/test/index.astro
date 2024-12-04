@@ -1,0 +1,18 @@
+---
+import SvelteTest from "../../components/SvelteTest.svelte"
+import CommonHead from "../../layouts/CommonHead.astro"
+---
+
+<html>
+  <CommonHead withTransition={true} />
+  <body>
+    <a href="/test">Index</a>
+    <a href="/test/other">Other</a>
+    <SvelteTest
+      message="index"
+      transition:persist="test"
+      transition:persist-props={false}
+      client:load
+    />
+  </body>
+</html>

@@ -1,9 +1,9 @@
 
 ---
 import * as d3 from "d3";
-import Graph from './Graph.svelte';
+import GraphInterface from "./GraphInterface.svelte";
 
-const {notes} = Astro.props;
+const {notes, ...otherProps} = Astro.props;
 
 let nodes = notes.map(note => ({...note}));
 let links = []
@@ -68,11 +68,11 @@ const simulationResults = computeForceSimulation(nodes, links);
 const shrankViewSpace = shrinkViewBox(simulationResults.nodes, simulationResults.links);
 ---
 
-<Graph
+<GraphInterface
   nodes={shrankViewSpace.nodes}
   links={shrankViewSpace.links}
   viewBox={shrankViewSpace.viewBox}
+  {...otherProps}
   client:load
-  transition:persist
 />
 

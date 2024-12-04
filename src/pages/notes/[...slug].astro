@@ -1,17 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-// 1. Generate a new path for every collection entry
+import WithGraph from '../../layouts/WithGraph.astro';
+import Note from '../../components/Note.astro';
+
 export async function getStaticPaths() {
   const notesEntries = await getCollection('notes');
   return notesEntries.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
   }));
 }
-// 2. For your template, you can get the entry directly from the prop
+
 const { entry } = Astro.props;
-const { Content } = await entry.render();
 ---
-<Layout title={entry.data.title}>
-    <Content />
-</Layout>
+<WithGraph>
+    <Note entry={entry} />
+</WithGraph>

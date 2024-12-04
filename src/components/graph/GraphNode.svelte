@@ -1,39 +1,68 @@
 <script>
   export let node;
-  export let zoomCoef;
+  export let scale;
+  export let active;
+  export let lineWidth;
+
+  // Bigger stuff
+  //$: side = 6 + 7 * scale
+  $: side = 3 + 4 * scale
+  $: innerSide = side * 1
 
   let hover = false;
 
-  const normalRadius = 2
-  $: radius = hover ? normalRadius * 1.2 : normalRadius;
+  $: highlighted = hover || active
+  //$: fontSize = 6 + 4 *  scale
+  $: fontSize = 5 + 4 *  scale
+
+
 </script>
 
 <g transform={`translate(${node.x}, ${node.y})`}>
-  <a href={`/graph/${node.id}`}>
-    <circle
-      r={radius}
-      fill="black"
-      style="cursor: pointer"
-      on:pointerenter={(_) => {hover = true}}
-      on:pointerleave={(_) => {hover = false;}}
+  <a
+    href={`/graph/${node.id}`}
+    aria-label={node.id}
+    style="cursor: pointer"
+    on:pointerenter={(_) => {hover = true}}
+    on:pointerleave={(_) => {hover = false}}
+  >
+    <rect
+      width={side}
+      height={side}
+      x={-side/2}
+      y={-side/2}
+      stroke='black'
+      stroke-width={lineWidth}
+      fill="white"
     />
+    {#if highlighted }
+    <rect
+      width={innerSide}
+      height={innerSide}
+      x={-innerSide/2}
+      y={-innerSide/2}
+      fill={"black"}
+    />
+    {/if}
   </a>
   <text
     class='node-text'
-    x={radius * 1.1}
+    x={side/2 + side*0.6}
     dominant-baseline="middle"
-    fill='darkblue'
-    font-size={8 * 1/zoomCoef}
+    fill='black'
+    font-size={`${fontSize}px`}
+    stroke-width={`${fontSize*0.5}px`}
   >
-    {#if zoomCoef > 2.5 || hover}
-      {node.title}
+    {#if scale > 0.2 || highlighted}
+      {node.id}
     {/if}
   </text>
 </g>
 
 <style>
 .node-text {
-  font-style: italic;
-  font-family: sans;
+  paint-order: stroke;
+  stroke: #fff;
+  z-index: 100;
 }
 </style>

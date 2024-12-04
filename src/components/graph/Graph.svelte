@@ -3,9 +3,11 @@
   import {onMount} from 'svelte';
   import GraphNode from "./GraphNode.svelte";
 
+
   export let nodes;
   export let links;
   export let viewBox;
+  export let urlState;
 
   const viewBoxWidth = viewBox[2] - viewBox[0];
   const viewBoxHeight = viewBox[3] - viewBox[1];
@@ -23,62 +25,82 @@
     maxX = Math.max(node.x, maxX);
     maxY = Math.max(node.y, maxY);
   }
-  console.log({viewBox, adjustedViewBox, maxX, maxY});
 
-  let transform = '';
-  let zoomCoef = 1;
+  let transform = { x: 0, y: 0, k: 1};
+  const maxZoomCoef = 10
+  let scale = 0;
+
+  $: lineWidth = 0.5 + 0.5*scale;
 
   let svgTag;
 
-
   onMount(() => {
     addZoom();
+    console.log("graph mounted");
   })
 
   const addZoom = () => {
     const zoomBehavior = d3.zoom()
-      .scaleExtent([1, 10])
-      //.translateExtent([viewBox.slice(0, 2), viewBox.slice(2, 4)])
+      .scaleExtent([1, maxZoomCoef])
       .on("zoom", zoomed)
     d3.select(svgTag).call(zoomBehavior)
 
     function zoomed(event) {
-        transform = `${event.transform}`;
-        zoomCoef = event.transform.k;
+        transform = event.transform;
+        const normZoom = (event.transform.k - 1) / (maxZoomCoef - 1);
+
+        // This is to achieve first fast but gradually slower zoom effect.
+        // With larger logScale, the slower the zoom effect will be at the max
+        // zoom.
+
+        const logScale = 10
+        scale = Math.log(normZoom* logScale + 1) / Math.log(logScale + 1)
     }
   }
+
+  console.log({urlState})
 </script>
 
-<svg bind:this={svgTag} width="100%" height='100%' viewBox={adjustedViewBox.join(' ')} class="svgGraph">
+<svg
+  bind:this={svgTag}
+  width="100%"
+  height='100%'
+  viewBox={adjustedViewBox.join(' ')}
+  class="svgGraph"
+>
   <g
-    transform={transform}
+    transform={`translate(${transform.x}, ${transform.y})`}
     class="zoomableContainer"
   >
-    {#each links as link}
+    {#each links as link }
       <line
-        stroke-width="0.1"
-        stroke='grey'
-        x1={link.source.x}
-        y1={link.source.y}
-        x2={link.target.x}
-        y2={link.target.y}
+        stroke-width={lineWidth}
+        stroke='#000'
+        x1={link.source.x * transform.k}
+        y1={link.source.y * transform.k}
+        x2={link.target.x * transform.k}
+        y2={link.target.y * transform.k}
       />
     {/each}
     {#each nodes as node (node.id)}
-      <GraphNode {node} {zoomCoef} />
+      <GraphNode
+        node={{x: node.x * transform.k,y: node.y * transform.k, id: node.id, title: node.title}}
+        {scale}
+        {lineWidth}
+        active={urlState.noteId === node.id}
+      />
     {/each}
   </g>
 </svg>
 
 <style>
 .svgGraph {
-  background: lightyellow;
+  background: white;
   cursor: crosshair;
 }
 
 .zoomableContainer {
   overflow: visible;
   backface-visibility: hidden;
-  transform-style: preserve-3d;
 }
 </style>

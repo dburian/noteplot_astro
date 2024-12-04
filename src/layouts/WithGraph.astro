@@ -1,8 +1,7 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
-import LinkGraph from '../components/graph/LinkGraph.astro';
+import PreComputedForceGraph from "../components/graph/PreComputeForceGraph.astro"
+import CommonHead from "./CommonHead.astro";
 import { getCollection } from 'astro:content';
-
 const allNotes = await getCollection('notes');
 
 const notes = allNotes.map(
@@ -12,29 +11,27 @@ const notes = allNotes.map(
     links: note.data.links.map(link => `notes/${link}`)
   })
 );
+
 ---
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="description" content="Astro description" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <meta name="generator" content={Astro.generator} />
-        <ViewTransitions />
-        <title>Graph</title>
-    </head>
-    <body>
-      <div class="flex h-screen">
-        <div class="flex-[2]">
-          <LinkGraph notes={notes} />
+  <CommonHead withTransition={true} />
+  <body>
+    <div
+      class="flex h-screen graph-note-container overflow-hidden"
+    >
+      <PreComputedForceGraph notes={notes} {...Astro.props} renderedUrl={Astro.url} />
+      {Astro.slots.has("default") && (
+        <div
+          class="h-screen overflow-y-auto overflow-x-clip flex-1 note-container"
+        >
+            <slot slot={Astro.slots.has("default") ? "second" : ""} />
         </div>
-        <div class="flex-1 overflow-scroll">
-          <slot />
-        </div>
-      </div>
-    </body>
+      )}
+    </div>
+  </body>
 </html>
+
 
 <style is:global>
   * {
@@ -55,14 +52,5 @@ const notes = allNotes.map(
           Courier New,
           monospace;
   }
-</style>
-<style>
-.graph-container {
-  min-width: 200px;
-  height: 100%
-}
-
-.focused-container {
-}
 </style>
 

@@ -9,7 +9,14 @@ import tailwind from "@astrojs/tailwind";
 export default defineConfig({
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeMathjax]
+    rehypePlugins: [rehypeMathjax],
+    shikiConfig: {
+        // Choose from Shiki's built-in themes (or add your own)
+        // https://shiki.style/themes
+        theme: 'github-light',
+        // Enable word wrap to prevent horizontal scrolling
+        wrap: true,
+      },
   },
   integrations: [svelte(), tailwind()]
 });

@@ -11,24 +11,24 @@
     "notes-build": "remark --watch --rc-path '.remarkrc.js' -- ~/repos/notes"
   },
   "dependencies": {
-    "@astrojs/svelte": "^4.0.2",
+    "@astrojs/svelte": "^5.4.0",
     "@astrojs/tailwind": "^5.0.0",
-    "astro": "^3.1.0",
+    "astro": "^4.8.6",
     "d3": "^7.8.5",
     "js-yaml": "^4.1.0",
-    "rehype-mathjax": "^5.0.0",
-    "remark": "^14.0.3",
-    "remark-cli": "^11.0.0",
+    "rehype-mathjax": "^6.0.0",
+    "remark": "^15.0.1",
+    "remark-cli": "^12.0.1",
     "remark-enhance-frontmatter": "^0.0.2",
     "remark-frontmatter": "^5.0.0",
-    "remark-inline-links": "^6.0.1",
-    "remark-math": "^5.0.0",
+    "remark-inline-links": "^7.0.0",
+    "remark-math": "^6.0.0",
     "svelte": "^4.2.1",
     "tailwindcss": "^3.3.3",
     "unist-util-visit": "^5.0.0"
   },
-  "notes": "Before updating to latest, check that @astrojs/markdown-remark also updated",
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.13",
     "@types/d3": "^7.4.1"
   }
 }
